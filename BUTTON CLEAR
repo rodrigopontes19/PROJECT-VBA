@@ -1,0 +1,150 @@
+'Programação do botão LIMPAR
+Private Sub btlimpa_Click()
+
+Dim CLIENTES As Worksheet
+Dim WHIST As Worksheet
+Dim WCAD As Worksheet
+Dim CNPJ As String
+
+Set WHIST = Sheets("HISTORICO PROPOSTA")
+Set WCAD = Sheets("CADASTROS")
+Set CLIENTES = Sheets("DETALHAMENTO CLIENTES")
+CNPJ = RegForm.NUMCNPJ.Value
+
+Application.ScreenUpdating = False
+           
+Call EXIBIR_PLAN
+           
+     Select Case MultiPage1.Value
+    
+    Case 0 To 5
+        
+        RegForm.NUMCNPJ.Value = Empty
+        RegForm.EMPRESA.Value = Empty
+        RegForm.TB3.Value = Empty
+        RegForm.TB4.Value = Empty
+        RegForm.TB5.Value = Empty
+        RegForm.TB6.Value = Empty
+        RegForm.TB7.Value = Empty
+        RegForm.TB8.Value = Empty
+        RegForm.TB060.Value = Empty
+        RegForm.TB061.Value = Empty
+        RegForm.TB062.Value = Empty
+        RegForm.TB063.Value = Empty
+        RegForm.TB064.Value = Empty
+        RegForm.TB065.Value = Empty
+        RegForm.TB9.Value = Empty
+        RegForm.TB10.Value = Empty
+        RegForm.TB10OUTROS.Value = Empty
+        RegForm.TB11.Value = Empty
+        RegForm.TB13.Value = Empty
+        RegForm.TB14.Value = Empty
+        RegForm.TB15.Value = Empty
+        RegForm.TB16.Value = Empty
+        RegForm.TB17.Enabled = True
+        RegForm.TB17.Value = Empty
+        RegForm.TB17.Enabled = False
+        RegForm.TB18.Enabled = True
+        RegForm.TB18.Value = Empty
+        RegForm.TB18.Enabled = False
+        RegForm.optapvsim = False
+        RegForm.optapvnao = False
+        RegForm.TB19.Enabled = True
+        RegForm.TB19.Value = Empty
+        RegForm.TB19.Enabled = False
+        RegForm.TB20.Enabled = True
+        RegForm.TB20.Value = Empty
+        RegForm.TB20.Enabled = False
+        RegForm.TB21.Value = Empty
+        RegForm.TB22.Value = Empty
+        RegForm.TB23.Value = Empty
+        RegForm.TB24.Value = Empty
+        RegForm.TB25.Value = Empty
+        RegForm.TB26.Value = Empty
+        RegForm.TB27.Value = Empty
+        RegForm.TB28.Value = Empty
+        RegForm.TB29.Value = Empty
+        RegForm.TB28a.Value = Empty
+        RegForm.TB29a.Value = Empty
+        RegForm.optcontsim = False
+        RegForm.optcontnao = False
+        RegForm.optultsim = False
+        RegForm.optultnao = False
+        RegForm.optcpfsim = False
+        RegForm.optcpfnao = False
+        RegForm.optprocsim = False
+        RegForm.optprocnao = False
+        RegForm.optressim = False
+        RegForm.optresnao = False
+        RegForm.optcnpjsim = False
+        RegForm.optcnpjnao = False
+        RegForm.optprofsim = False
+        RegForm.optprofnao = False
+        RegForm.TB30.Enabled = True
+        RegForm.TB30.Value = Empty
+        RegForm.TB30.Enabled = False
+        RegForm.TB31.Enabled = True
+        RegForm.TB31.Value = Empty
+        RegForm.TB31.Enabled = False
+        RegForm.optstatussim = False
+        RegForm.optstatusnao = False
+        RegForm.TB32.Enabled = True
+        RegForm.TB32.Value = Empty
+        RegForm.TB32.Enabled = False
+        RegForm.TB33.Enabled = True
+        RegForm.TB33.Value = Empty
+        RegForm.TB33.Enabled = False
+        RegForm.TB34.Value = Empty
+        RegForm.optflexsim = False
+        RegForm.optflexnao = False
+        RegForm.TB35.Value = Empty
+        RegForm.TB36.Value = Empty
+        RegForm.TB37.Value = Empty
+        RegForm.TB38.Value = Empty
+        RegForm.TB39.Value = Empty
+        RegForm.TB40.Value = Empty
+        RegForm.TB41.Value = Empty
+        RegForm.TB42.Value = Empty
+        RegForm.TB43.Value = Empty
+        RegForm.TB44.Value = Empty
+        RegForm.opttasim = False
+        RegForm.opttanao = False
+        RegForm.TB45.Value = Empty
+        RegForm.TB46.Value = Empty
+        RegForm.TB47.Value = Empty
+        RegForm.TB48.Value = Empty
+        RegForm.TB49.Value = Empty
+        RegForm.TB53.Value = Empty
+        RegForm.TB54.Value = Empty
+        RegForm.TB55.Value = Empty
+        RegForm.TB56.Value = Empty
+        RegForm.LBLTA.Caption = Empty
+        RegForm.LBLFLEX.Caption = Empty
+        RegForm.LBLREM.Caption = Empty
+        RegForm.LBLUTEIS.Caption = Empty
+        RegForm.LBLOUTROS.Caption = Empty
+        RegForm.LBRESTA.Caption = Empty
+        RegForm.LBRESFLEX.Caption = Empty
+        RegForm.LBRESREM.Caption = Empty
+        RegForm.LBRESUTEIS.Caption = Empty
+        RegForm.LBRESOUTROS.Caption = Empty
+              
+        End Select
+
+
+    WHIST.Select
+    WHIST.Range("S2:AK2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.ClearContents
+    
+    WCAD.Select
+    Call OCULTAR_PLAN
+    
+    
+    RegForm.MultiPage1.Value = 0
+    
+    RegForm.NUMCNPJ.SetFocus
+    
+Application.ScreenUpdating = True
+
+End Sub
