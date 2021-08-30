@@ -1,0 +1,122 @@
+'Programação do botão NOVO
+Private Sub btnovo_Click()
+
+Dim CLIENTES As Worksheet
+Dim WCAD As Worksheet
+Dim CNPJ As String
+Dim resultado As VbMsgBoxResult
+
+Set CLIENTES = Sheets("DETALHAMENTO CLIENTES")
+Set WCAD = Sheets("CADASTROS")
+CNPJ = NUMCNPJ.Value
+resultado = MsgBox("Você gostaria de Adicionar este novo registro à Base de Dados?", vbYesNo)
+
+Application.ScreenUpdating = False
+
+
+CLIENTES.Select
+
+CLIENTES.Range("B1048576").Select
+Selection.End(xlUp).Select
+ActiveCell.Offset(1, 0).Select
+
+
+If CNPJ = "" Then
+    
+    WCAD.Select
+    
+    Application.ScreenUpdating = True
+    MsgBox "Por favor, digite um número de CNPJ e seus respectivos dados para ser inserido na Base de dados!", vbOKOnly
+        
+    Exit Sub
+       
+
+End If
+
+If resultado = vbYes Then
+
+If RegForm.NUMCNPJ.Value <> "" Then GoTo FIM Else GoTo NOVO
+
+FIM:
+
+CLIENTES.Range("B2").Select
+
+Application.ScreenUpdating = False
+
+ Do While ActiveCell.Value <> "" And RegForm.NUMCNPJ.Value = ActiveCell.Value
+    
+    WCAD.Select
+    
+    Application.ScreenUpdating = True
+    
+    MsgBox "Este CNPJ já existe na Base de Dados!", vbOKOnly
+    
+    Application.ScreenUpdating = True
+    
+    Exit Sub
+    
+    ActiveCell.Offset(1, 0).Select
+Loop
+
+
+
+NOVO:
+
+ Select Case MultiPage1.Value
+    
+            
+        Case 0
+        
+        CLIENTES.Range("B1048576").Select
+        Selection.End(xlUp).Select
+        ActiveCell.Offset(1, 0).Select
+        
+        ActiveCell.Offset(0, 0).Value = CNPJ
+        ActiveCell.Offset(0, 1).Value = RegForm.EMPRESA.Value
+        ActiveCell.Offset(0, 2).Value = RegForm.TB3.Value
+        ActiveCell.Offset(0, 3).Value = RegForm.TB4.Value
+        ActiveCell.Offset(0, 4).Value = RegForm.TB5.Value
+        ActiveCell.Offset(0, 5).Value = RegForm.TB6.Value
+        ActiveCell.Offset(0, 6).Value = RegForm.TB7.Value
+        ActiveCell.Offset(0, 21).Value = RegForm.TB8.Value
+                
+        End Select
+                           
+         Select Case MultiPage1.Value
+    
+    Case 0
+    RegForm.NUMCNPJ.Value = Empty
+    RegForm.EMPRESA.Value = Empty
+    RegForm.TB3.Value = Empty
+    RegForm.TB4.Value = Empty
+    RegForm.TB5.Value = Empty
+    RegForm.TB6.Value = Empty
+    RegForm.TB7.Value = Empty
+    RegForm.TB8.Value = Empty
+        
+    End Select
+        
+        WCAD.Select
+        
+        Application.ScreenUpdating = True
+        
+        MsgBox "Item adicionado com sucesso!", vbOKOnly
+               
+        Exit Sub
+        
+        Else
+        
+        WCAD.Select
+        
+        Application.ScreenUpdating = True
+        
+        Exit Sub
+        
+End If
+
+    WCAD.Select
+    
+    Application.ScreenUpdating = True
+
+
+End Sub
