@@ -1,0 +1,858 @@
+Private Sub CB3_Click()
+If RegForm.CB3 = True Then
+    
+    With RegForm
+    .TB23.Enabled = True
+    .TB23.BackColor = &H80000005
+    End With
+    
+Else
+
+    With RegForm
+    .TB23.Enabled = False
+    .TB23.BackColor = &H8000000F
+    End With
+    
+End If
+End Sub
+
+Private Sub CB4_Click()
+If RegForm.CB4 = True Then
+    
+    With RegForm
+    .TB24.Enabled = True
+    .TB24.BackColor = &H80000005
+    End With
+    
+Else
+
+    With RegForm
+    .TB24.Enabled = False
+    .TB24.BackColor = &H8000000F
+    End With
+    
+End If
+End Sub
+
+
+
+Private Sub CBOUTROS_Click()
+If RegForm.CBOUTROS = True Then
+    
+    With RegForm
+    .TB27.Enabled = True
+    .TB27.BackColor = &H80000005
+    End With
+    
+Else
+    
+    With RegForm
+    .TB27.Enabled = False
+    .TB27.BackColor = &H8000000F
+    End With
+    
+End If
+End Sub
+
+
+Private Sub CMD_VENCIMENTO_Click()
+
+Call EXIBIR_PLAN
+
+Dim DATA_RESULTADO_TA As Double
+Dim DATA_RESULTADO_CC As Double
+Dim DATA_RESULTADO_CS As Double
+Dim W As Worksheet
+Dim WCAD As Worksheet
+Dim CNPJ As Double
+
+Set W = Sheets("EMPRESAS")
+Set WCAD = Sheets("CADASTROS")
+
+W.Select
+
+Call LIMPAR_FILTROS
+
+Range("A2").Select
+
+Do While ActiveCell.Value <> ""
+
+    DATA_RESULTADO_CC = Date + 60
+    DATA_RESULTADO_TA = Date + 60
+    DATA_RESULTADO_CS = Date + 60
+        
+        If ActiveCell.Offset(0, 3).Value <= DATA_RESULTADO_TA And ActiveCell.Offset(0, 3).Value > 0 Then
+        
+        Range("L1048576").End(xlUp).Offset(1, 0).Value = ActiveCell.Value
+        Range("M1048576").End(xlUp).Offset(1, 0).Value = ActiveCell.Offset(0, 1).Value
+        Range("N1048576").End(xlUp).Offset(1, 0).Value = ActiveCell.Offset(0, 2).Value
+        Range("O1048576").End(xlUp).Offset(1, 0).Value = ActiveCell.Offset(0, 3).Value
+        Range("P1048576").End(xlUp).Offset(1, 0).Value = ActiveCell.Offset(0, 4).Value
+        
+        End If
+        
+            Do While Range("L1048576").End(xlUp).Value = ActiveCell.Value
+            
+                If ActiveCell.Offset(0, 2).Value <= DATA_RESULTADO_CC And ActiveCell.Offset(0, 2).Value > 0 Then
+                
+                Range("N1048576").End(xlUp).Value = ActiveCell.Offset(0, 2).Value
+                
+                End If
+            
+            ActiveCell.Offset(1, 0).Select
+        
+            Loop
+            
+            Do While Range("L1048576").End(xlUp).Value = ActiveCell.Value
+            
+                If ActiveCell.Offset(0, 4).Value <= DATA_RESULTADO_CS And ActiveCell.Offset(0, 4).Value > 0 Then
+                
+                Range("P1048576").End(xlUp).Value = ActiveCell.Offset(0, 4).Value
+                
+                End If
+            
+            ActiveCell.Offset(1, 0).Select
+        
+            Loop
+            
+    ActiveCell.Offset(1, 0).Select
+
+Loop
+
+Call OCULTAR_PLAN
+
+WCAD.Select
+
+FORM_VENCIMENTO.Show
+
+End Sub
+
+Private Sub cmdabrirprop_Click()
+Dim Word As New Word.Application
+
+
+If RegForm.TB17.Text = "" Then
+
+MsgBox "Por favor, click em PROCUAR e selecione o arquivo que deseja!", vbExclamation, "Selecione um Arquivo!"
+
+Exit Sub
+
+End If
+
+
+On Error GoTo CODIGO_ERRO
+With Word
+
+RegForm.TB17.Enabled = True
+.Documents.Open (RegForm.TB17.Text)
+RegForm.TB17.Enabled = False
+.Visible = True
+.WindowState = wdWindowStateMaximize
+
+End With
+
+Set Word = Nothing
+
+Exit Sub
+
+CODIGO_ERRO:
+
+ MsgBox "Formato de Arquivo Inválido!", vbInformation, "Arquivo Inválido"
+End Sub
+
+Private Sub CMDAPVPROP_Click()
+
+
+If RegForm.TB17.Value = "" Or RegForm.TB18.Value = "" Then
+
+    MsgBox "Por favor, preencha os dados da Proposta para serem aprovados!", vbExclamation, "Aprovar / Não Aprovar"
+    
+    Exit Sub
+End If
+
+FormSenha.Show
+
+
+End Sub
+
+Private Sub CMDAPVTA_Click()
+
+If RegForm.TB30.Value = "" Or RegForm.TB31.Value = "" Then
+
+    MsgBox "Por favor, preencha os dados do Termo de Acordo para serem aprovados!", vbExclamation, "Aprovar / Não Aprovar"
+    
+    Exit Sub
+End If
+
+TAForm.Show
+
+End Sub
+
+Private Sub cmdbarirtermo_Click()
+
+Dim Word As New Word.Application
+
+
+If RegForm.TB30.Text = "" Then
+
+MsgBox "Por favor, click em PROCURAR e selecione o arquivo que deseja!", vbExclamation, "Selecione um Arquivo!"
+
+
+Exit Sub
+
+End If
+
+
+On Error GoTo CODIGO_ERRO
+With Word
+
+RegForm.TB30.Enabled = True
+.Documents.Open (RegForm.TB30.Text)
+RegForm.TB30.Enabled = False
+.Visible = True
+.WindowState = wdWindowStateMaximize
+
+End With
+
+Set Word = Nothing
+
+Exit Sub
+
+CODIGO_ERRO:
+
+ MsgBox "Formato de Arquivo Inválido!", vbInformation, "Arquivo Inválido"
+
+End Sub
+
+Private Sub cmdproc_Click()
+
+Dim AppOutk     As Object
+Dim MailOutk    As Object
+Dim Assunto     As String
+Dim EMPRESA     As String
+Dim CNPJ        As Double
+Dim Resumo      As String
+Dim Pendencias  As String
+Dim Nome        As String
+Dim resultado   As VbMsgBoxResult
+
+
+
+Set AppOutk = New Outlook.Application                                                                                            'Define a aplicação do Outlook
+Set MailOutk = AppOutk.CreateItem(0)                                                                                      'Define o objeto "Email" da Aplicação Outlook
+Assunto = "Proposta"
+EMPRESA = RegForm.EMPRESA.Text
+CNPJ = RegForm.NUMCNPJ.Text
+Resumo = "Informo que o arquivo de Proposta ja está disponível para sua validação. Peço consultar no Detalhamento de Clientes o Arquivo citado."
+Nome = RegForm.TB8.Value
+arq = Application.GetOpenFilename("Arquivo de Word (*.doc; *.docx),*.doc; *.docx", Title = "Selecione o arquivo desejeado!")
+
+Application.ScreenUpdating = False
+
+If RegForm.NUMCNPJ.Value = "" And RegForm.EMPRESA.Value = "" Then
+
+    
+    MsgBox "É necessário consultar a Empresa desejada para continuar!", vbExclamation, "Arquivo de Proposta"
+    
+    Application.ScreenUpdating = True
+    Exit Sub
+End If
+
+
+If arq = "" Or arq = False Then
+
+    RegForm.TB17.Text = Empty
+
+    MsgBox "Por favor, selecione um arquivo!", vbExclamation, "Seleção de Arquivos"
+        
+    Application.ScreenUpdating = True
+Exit Sub
+
+Else
+
+GoTo continuar
+
+End If
+
+continuar:
+
+RegForm.TB17.Enabled = True
+RegForm.TB17.Text = arq
+RegForm.TB17.Enabled = False
+RegForm.TB18.Enabled = True
+RegForm.TB18.Text = DateValue(Now)
+RegForm.TB18.Enabled = False
+
+resultado = MsgBox("Informar disponibilidade do Arquivo?", vbYesNo, "Arquivo de")
+
+If resultado = vbYes Then
+
+
+On Error Resume Next
+With MailOutk
+    .Display
+    .To = "negocios.eglc2@infraero.gov.br"                                                                              'Coluna Para
+    .CC = "nteixeira.br@infraero.gov.br"                                                                                'Coluna Com Cópia
+    .BCC = ""                                                                                                           'Coluna Copia Oculta
+    .Subject = Assunto & " " & "-" & " " & EMPRESA & " " & "CNPJ:" & " " & CNPJ                                         'Coluna Assunto
+    .Body = "Prezados," & Chr(13) & Chr(13) & Resumo & _
+     "Mensagem enviada automaticamente a partir da Planilha de Detalhamento de Clientes." & Chr(13) & Chr(13) & _
+     "Atenciosamente," & Chr(13) & Chr(13) & Nome                                                                       'Coluna Corpo do Email
+    .Attachments.Add ""                                                                                                 'Coluna Anexo
+    .Importance = olImportanceHigh
+    .Send
+End With
+
+Set MailOutk = Nothing                                                                                                  'Esvazia a variavel
+Set AppOutk = Nothing
+
+Application.ScreenUpdating = True
+
+Exit Sub
+    Else
+        
+      If resultado = vbNo Then
+      
+      Application.ScreenUpdating = True
+      
+      Exit Sub
+      
+      End If
+        
+End If
+
+End Sub
+
+Private Sub CMDREL_Click()
+Dim REL As Worksheet
+Dim CNPJ As String
+Dim EMP As String
+
+Set REL = Sheets("RELATORIO DE CONTATO")
+CNPJ = RegForm.NUMCNPJ.Value
+EMP = RegForm.EMPRESA.Value
+
+Application.ScreenUpdating = False
+
+If CNPJ = "" Or EMP = "" Then
+
+MsgBox "Por favor, insira um número de CNPJ e click em 'CONSULTAR'!", vbOKOnly
+
+Application.ScreenUpdating = True
+Exit Sub
+
+End If
+
+With RegForm
+
+    USERREL.CAPDATA.Value = Date
+    USERREL.CAPCNPJ.Caption = .NUMCNPJ.Value
+    USERREL.CAPEMP.Caption = .EMPRESA.Value
+    
+End With
+
+USERREL.Show
+
+Application.ScreenUpdating = True
+
+End Sub
+
+Private Sub cmdtermo_Click()
+
+Dim AppOutk     As Object
+Dim MailOutk    As Object
+Dim Assunto     As String
+Dim EMPRESA     As String
+Dim CNPJ        As Double
+Dim Resumo      As String
+Dim Pendencias  As String
+Dim Nome        As String
+Dim resultado   As VbMsgBoxResult
+
+
+
+Set AppOutk = New Outlook.Application                                                                                            'Define a aplicação do Outlook
+Set MailOutk = AppOutk.CreateItem(0)                                                                                      'Define o objeto "Email" da Aplicação Outlook
+Assunto = "Termo de Acordo"
+EMPRESA = RegForm.EMPRESA.Text
+CNPJ = RegForm.NUMCNPJ.Text
+Resumo = "Informo que o arquivo de Termo de Acordo ja está disponível para sua validação. Peço consultar no Detalhamento de Clientes o Arquivo citado."
+Nome = RegForm.TB8.Value
+arq = Application.GetOpenFilename("Arquivo de Word (*.doc; *.docx),*.doc; *.docx", Title = "Selecione o arquivo desejeado!")
+
+Application.ScreenUpdating = False
+
+If RegForm.NUMCNPJ.Value = "" And RegForm.EMPRESA.Value = "" Then
+
+    
+    MsgBox "É necessário consultar a Empresa desejada para continuar!", vbExclamation, "Termo de Acordo"
+    
+    Application.ScreenUpdating = True
+    Exit Sub
+End If
+
+
+If arq = "" Or arq = False Then
+    
+    RegForm.TB30.Enabled = True
+    RegForm.TB30.Text = Empty
+    RegForm.TB30.Enabled = False
+    RegForm.TB31.Enabled = True
+    RegForm.TB31.Value = Empty
+    RegForm.TB31.Enabled = False
+
+    MsgBox "Por favor, selecione um arquivo!", vbExclamation, "Seleção de Arquivos"
+        
+    Application.ScreenUpdating = True
+Exit Sub
+
+Else
+
+GoTo continuar
+
+End If
+
+continuar:
+
+RegForm.TB30.Enabled = True
+RegForm.TB30.Text = arq
+RegForm.TB30.Enabled = False
+RegForm.TB31.Enabled = True
+RegForm.TB31.Text = DateValue(Now)
+RegForm.TB31.Enabled = False
+
+resultado = MsgBox("Informar disponibilidade do Arquivo?", vbYesNo, "Termo de Acordo")
+
+If resultado = vbYes Then
+
+
+On Error Resume Next
+With MailOutk
+    .Display
+    .To = "negocios.eglc2@infraero.gov.br"                                                                              'Coluna Para
+    .CC = "nteixeira.br@infraero.gov.br"                                                                                'Coluna Com Cópia
+    .BCC = ""                                                                                                           'Coluna Copia Oculta
+    .Subject = Assunto & " " & "-" & " " & EMPRESA & " " & "CNPJ:" & " " & CNPJ                                         'Coluna Assunto
+    .Body = "Prezados," & Chr(13) & Chr(13) & Resumo & Chr(13) & Chr(13) & _
+     "Mensagem enviada automaticamente a partir da Planilha de Detalhamento de Clientes." & Chr(13) & Chr(13) & _
+     "Atenciosamente," & Chr(13) & Chr(13) & Nome                                                                       'Coluna Corpo do Email
+    .Attachments.Add ""                                                                                                 'Coluna Anexo
+    .Importance = olImportanceHigh
+    .Send
+End With
+
+Set MailOutk = Nothing                                                                                                  'Esvazia a variavel
+Set AppOutk = Nothing
+
+Application.ScreenUpdating = True
+
+Exit Sub
+    Else
+        
+      If resultado = vbNo Then
+      
+      Application.ScreenUpdating = True
+      
+      Exit Sub
+      
+      End If
+        
+End If
+
+End Sub
+
+Private Sub CommandButton1_Click()
+ Dim CNPJ As String
+ Dim resposta As String
+ Dim WIMP As Worksheet
+ Dim WCAD As Worksheet
+ 
+ CNPJ = RegForm.NUMCNPJ.Value
+ Set WIMP = Sheets("Importação")
+ Set WCAD = Sheets("CADASTROS")
+ 
+ If ValidaçãoCNPJ(CNPJ) = False Then
+ MsgBox "digite um CNPJ válido"
+ Exit Sub
+ Else
+ 
+ Call CNPJ2
+ Call carregar_dados
+ 
+ End If
+ 
+ With WIMP
+ 
+    .Select
+    .Range("A:A").EntireColumn.ClearContents
+    .Visible = xlSheetVeryHidden
+
+ End With
+ 
+ WCAD.Select
+ 
+End Sub
+
+
+Private Sub LB1_DblClick(ByVal Cancel As MSForms.ReturnBoolean)
+
+Dim WCRED As Worksheet
+Dim WCAD As Worksheet
+
+Set WCRED = Sheets("HISTORICO PROPOSTA")
+Set WCAD = Sheets("CADASTROS")
+
+Application.ScreenUpdating = False
+
+Call EXIBIR_PLAN
+
+On Error GoTo CODIGO_ERRO
+
+With FORMVISUL
+    
+    .TB17.Enabled = True
+    .TB17.Value = RegForm.LB1.Column(1)
+    .TB17.Enabled = False
+    .TB18.Enabled = True
+    .TB18.Value = RegForm.LB1.Column(3)
+    .TB18.Enabled = False
+    .TB19.Enabled = True
+    .TB19.Value = RegForm.LB1.Column(4)
+    .TB19.Enabled = False
+    .TB20.Enabled = True
+    .TB20.Value = RegForm.LB1.Column(5)
+    .TB20.Enabled = False
+    .TB21.Enabled = True
+    .TB21.Value = RegForm.LB1.Column(6)
+    .TB21.Enabled = False
+
+
+End With
+
+    If RegForm.LB1.Column(7) = "SIM" Then
+        FORMVISUL.CB1.Enabled = True
+        FORMVISUL.CB1 = True
+        FORMVISUL.CB1.Enabled = False
+    Else
+    
+        FORMVISUL.CB1.Enabled = True
+        FORMVISUL.CB1 = False
+        FORMVISUL.CB1.Enabled = False
+        
+    End If
+    
+    If RegForm.LB1.Column(8) = "SIM" Then
+        
+        FORMVISUL.CB2.Enabled = True
+        FORMVISUL.CB2 = True
+        FORMVISUL.CB2.Enabled = False
+    Else
+        FORMVISUL.CB2.Enabled = True
+        FORMVISUL.CB2 = False
+        FORMVISUL.CB2.Enabled = False
+    
+    End If
+    
+    If RegForm.LB1.Column(9) = "SIM" Then
+        
+        FORMVISUL.CB3a.Enabled = True
+        FORMVISUL.CB3a = True
+        FORMVISUL.CB3a.Enabled = False
+        
+    Else
+        FORMVISUL.CB3a.Enabled = True
+        FORMVISUL.CB3a = False
+        FORMVISUL.CB3a.Enabled = False
+        
+    End If
+    
+    If RegForm.LB1.Column(10) = "SIM" Then
+        
+        FORMVISUL.CB3.Enabled = True
+        FORMVISUL.CB3 = True
+        FORMVISUL.CB3.Enabled = False
+        
+    Else
+        FORMVISUL.CB3.Enabled = True
+        FORMVISUL.CB3 = False
+        FORMVISUL.CB3.Enabled = False
+        
+    End If
+    
+    If RegForm.LB1.Column(11) = "SIM" Then
+    
+        FORMVISUL.CB4.Enabled = True
+        FORMVISUL.CB4 = True
+        FORMVISUL.CB4.Enabled = False
+        
+    Else
+        FORMVISUL.CB4.Enabled = True
+        FORMVISUL.CB4 = False
+        FORMVISUL.CB4.Enabled = False
+        
+    End If
+    
+    If RegForm.LB1.Column(12) = "SIM" Then
+    
+        FORMVISUL.CBOUTROS.Enabled = True
+        FORMVISUL.CBOUTROS = True
+        FORMVISUL.CBOUTROS.Enabled = False
+        
+    Else
+        FORMVISUL.CBOUTROS.Enabled = True
+        FORMVISUL.CBOUTROS = False
+        FORMVISUL.CBOUTROS.Enabled = False
+    End If
+    
+    WCRED.Select
+    Range("W2").Select
+    
+    Do While ActiveCell.Value <> ""
+    
+        If ActiveCell.Value = RegForm.LB1.Column(2) Then
+        
+            FORMVISUL.TB21.Enabled = True
+            FORMVISUL.TB21.Value = ActiveCell.Offset(0, 10).Value
+            FORMVISUL.TB21.Enabled = False
+            FORMVISUL.TB22.Enabled = True
+            FORMVISUL.TB22.Value = ActiveCell.Offset(0, 11).Value
+            FORMVISUL.TB22.Enabled = False
+            FORMVISUL.TB23.Enabled = True
+            FORMVISUL.TB23.Value = ActiveCell.Offset(0, 12).Value
+            FORMVISUL.TB23.Enabled = False
+            FORMVISUL.TB24.Enabled = True
+            FORMVISUL.TB24.Value = ActiveCell.Offset(0, 13).Value
+            FORMVISUL.TB24.Enabled = False
+            FORMVISUL.TB27.Enabled = True
+            FORMVISUL.TB27.Value = ActiveCell.Offset(0, 14).Value
+            FORMVISUL.TB27.Enabled = False
+            
+        End If
+        
+    ActiveCell.Offset(1, 0).Select
+    
+    Loop
+    
+
+    FORMVISUL.Show
+    
+    Call OCULTAR_PLAN
+    WCAD.Select
+    
+ Exit Sub
+    
+CODIGO_ERRO:
+    
+    MsgBox "Ocorreu um erro, por favor clique novamente!", vbCritical, "Erro Desconhecido"
+    
+    Application.ScreenUpdating = True
+
+End Sub
+
+Private Sub MultiPage1_Click(ByVal Index As Long)
+
+
+
+Select Case MultiPage1.Value
+
+Case 0
+
+RegForm.btnovo.Enabled = True
+
+End Select
+
+Select Case MultiPage1.Value
+
+Case 1 To 5
+
+    RegForm.btnovo.Enabled = False
+
+End Select
+
+
+End Sub
+
+
+Private Sub optflexnao_Click()
+
+ With RegForm
+    
+        .TB37.Enabled = True
+        .TB37.BackColor = &H80000018
+        .TB38.Enabled = True
+        .TB38.BackColor = &H80000018
+        .TB39.Enabled = True
+        .TB39.BackColor = &H80000005
+        .TB40.Enabled = True
+        .TB40.BackColor = &H80000005
+        .TB41.Enabled = True
+        .TB41.BackColor = &H80000005
+        .TB44.Enabled = True
+        .TB44.BackColor = &H80000005
+        .opttasim.Enabled = True
+        .opttasim.ForeColor = &H80000012
+        .opttanao.Enabled = True
+        .opttanao.ForeColor = &H80000012
+        .TB45.Enabled = True
+        .TB45.BackColor = &H80000005
+        .TB46.Enabled = True
+        .TB46.BackColor = &H80000005
+        .TB49.Enabled = True
+        .TB49.BackColor = &H80000005
+        
+    End With
+
+End Sub
+
+Private Sub optflexsim_Click()
+
+    With RegForm
+    
+        .TB37 = Empty
+        .TB37.Enabled = False
+        .TB37.BackColor = &H8000000F
+        .TB38 = Empty
+        .TB38.Enabled = False
+        .TB38.BackColor = &H8000000F
+        .TB39 = Empty
+        .TB39.Enabled = False
+        .TB39.BackColor = &H8000000F
+        .TB40 = Empty
+        .TB40.Enabled = False
+        .TB40.BackColor = &H8000000F
+        .TB41 = Empty
+        .TB41.Enabled = False
+        .TB41.BackColor = &H8000000F
+        .TB44 = Empty
+        .TB44.Enabled = False
+        .TB44.BackColor = &H8000000F
+        .opttasim.Enabled = False
+        .opttasim.ForeColor = &H8000000F
+        .opttanao.Enabled = False
+        .opttanao.ForeColor = &H8000000F
+        .TB45 = Empty
+        .TB45.Enabled = False
+        .TB45.BackColor = &H8000000F
+        .TB46 = Empty
+        .TB46.Enabled = False
+        .TB46.BackColor = &H8000000F
+        .TB49 = Empty
+        .TB49.Enabled = False
+        .TB49.BackColor = &H8000000F
+        .opttasim = False
+        .opttanao = False
+        
+    End With
+End Sub
+
+
+Private Sub TB10_DropButtonClick()
+Dim WDET As Worksheet
+Dim WCAD As Worksheet
+
+Set WDET = Sheets("DETALHAMENTO CLIENTES")
+Set WCAD = Sheets("CADASTROS")
+
+Application.ScreenUpdating = False
+
+WDET.Select
+Range("CN3").Select
+
+With RegForm
+
+         .TB10.RowSource = "CN3:CN7"
+
+        If .TB10.Value = "Outros" Then
+        
+            .TB10OUTROS.Visible = True
+        
+        Else
+        
+            .TB10OUTROS.Visible = False
+            
+        End If
+        
+
+End With
+
+
+
+WCAD.Select
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+Private Sub TB10_KeyDown(ByVal KeyCode As MSForms.ReturnInteger, ByVal Shift As Integer)
+
+With RegForm
+
+        If .TB10.Value = "Outros" Then
+        
+            .TB10OUTROS.Visible = True
+        
+        Else
+        
+            .TB10OUTROS.Visible = False
+            
+        End If
+        
+
+End With
+
+End Sub
+
+Private Sub TB11_DropButtonClick()
+Dim WDET As Worksheet
+Dim WCAD As Worksheet
+
+Set WDET = Sheets("DETALHAMENTO CLIENTES")
+Set WCAD = Sheets("CADASTROS")
+
+Application.ScreenUpdating = False
+
+WDET.Select
+Range("CO3").Select
+
+With RegForm
+
+         .TB11.RowSource = "CO3:CO5"
+
+End With
+
+WCAD.Select
+
+Application.ScreenUpdating = True
+
+End Sub
+
+
+Private Sub UserForm_Activate()
+
+    
+Select Case MultiPage1.Value
+
+Case 0 To 3
+
+With RegForm
+    
+    .TB10OUTROS.Visible = False
+    
+    .optapvsim.Enabled = False
+    .optapvsim.ForeColor = &H80000012
+    .optapvnao.Enabled = False
+    .optapvnao.ForeColor = &H80000012
+    .optstatussim.Enabled = False
+    .optstatussim.ForeColor = &H80000012
+    .optstatusnao.Enabled = False
+    .optstatusnao.ForeColor = &H80000012
+    
+End With
+
+
+End Select
+
+Application.ScreenUpdating = True
+
+End Sub
