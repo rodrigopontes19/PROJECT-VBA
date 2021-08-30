@@ -1,0 +1,422 @@
+Private Sub btconsulta_Click()
+
+'PROGRAMAÇÃO DO BOTÃO CONSULTAR.
+
+' DIMENSIONAMENTO DE VARIÁVEIS
+Dim CLIENTES As Worksheet
+Dim WCAD As Worksheet
+Dim WHIST As Worksheet
+Dim CNPJ As String
+Dim resposta As Integer
+Dim EMP As Worksheet
+
+'SETAGEM DAS VARIÁVEIS
+Set WCAD = Sheets("CADASTROS")
+Set WHIST = Sheets("HISTORICO PROPOSTA")
+Set CLIENTES = Sheets("DETALHAMENTO CLIENTES")
+CNPJ = RegForm.NUMCNPJ.Value
+Set EMP = Sheets("EMPRESAS")
+
+' DESABILITA ATUALIZAÇÃO DE TELA
+Application.ScreenUpdating = False
+
+
+PLANILHA:
+Windows("000_DETALHAMENTO DE NEGOCIACAO.xlsm").Activate
+
+On Error GoTo PLANILHA
+With RegForm
+
+    If .NUMCNPJ.Value = "" And .EMPRESA.Value <> "" Then
+        
+        EMP.Visible = xlSheetVisible
+        EMP.Select
+'        Range("D2:G1048576").Delete
+'
+        Range("G2").Value = .EMPRESA.Value
+        
+                
+        EMP.Visible = xlSheetVeryHidden
+        WCAD.Select
+        
+        CONSULTA_LB.Show
+    
+    Exit Sub
+    
+        Else
+        
+            If .NUMCNPJ <> "" And .EMPRESA = "" Then
+            
+                GoTo NORMAL
+            
+            End If
+    
+    End If
+    
+End With
+
+NORMAL:
+
+Call EXIBIR_PLAN
+
+If CNPJ = "" Then
+
+MsgBox "Por favor, insira um número de CNPJ!", vbOKOnly
+
+WCAD.Select
+Call OCULTAR_PLAN
+
+Application.ScreenUpdating = True
+Exit Sub
+
+End If
+
+Application.ScreenUpdating = False
+
+WHIST.Select
+
+WHIST.Range("S2").Value = RegForm.NUMCNPJ.Value
+
+CLIENTES.Select
+CLIENTES.Range("B4").Select
+
+Do While ActiveCell.Value <> ""
+
+     
+    If ActiveCell.Value = CNPJ Then
+            
+        Select Case MultiPage1.Value
+    
+        Case 0 To 5
+            
+        RegForm.EMPRESA.Value = ActiveCell.Offset(0, 1).Value
+        RegForm.TB3.Value = ActiveCell.Offset(0, 2).Value
+        RegForm.TB4.Value = ActiveCell.Offset(0, 3).Value
+        RegForm.TB5.Value = ActiveCell.Offset(0, 4).Value
+        RegForm.TB6.Value = ActiveCell.Offset(0, 5).Value
+        RegForm.TB7.Value = ActiveCell.Offset(0, 6).Value
+        RegForm.TB8.Value = ActiveCell.Offset(0, 21).Value
+        RegForm.TB060.Value = ActiveCell.Offset(0, 8).Value
+        RegForm.TB061.Value = ActiveCell.Offset(0, 9).Value
+        RegForm.TB062.Value = ActiveCell.Offset(0, 10).Value
+        RegForm.TB063.Value = ActiveCell.Offset(0, 11).Value
+        RegForm.TB064.Value = ActiveCell.Offset(0, 12).Value
+        RegForm.TB065.Value = ActiveCell.Offset(0, 13).Value
+        RegForm.TB9.Value = ActiveCell.Offset(0, 22).Value
+        RegForm.TB10.Value = ActiveCell.Offset(0, 23).Value
+        RegForm.TB11.Value = ActiveCell.Offset(0, 24).Value
+        RegForm.TB13.Value = ActiveCell.Offset(0, 25).Value
+        RegForm.TB14.Value = ActiveCell.Offset(0, 26).Value
+        RegForm.TB15.Value = ActiveCell.Offset(0, 27).Value
+        RegForm.TB16.Value = ActiveCell.Offset(0, 28).Value
+        
+        RegForm.TB17.Enabled = True
+        RegForm.TB17.Value = ActiveCell.Offset(0, 30).Value
+        RegForm.TB17.Enabled = False
+        
+        RegForm.TB18.Enabled = True
+        RegForm.TB18.Value = ActiveCell.Offset(0, 31).Value
+        RegForm.TB18.Enabled = False
+        
+        If ActiveCell.Offset(0, 32).Value = RegForm.optapvnao.Caption Or ActiveCell.Offset(0, 32).Value = "" Then
+        
+            RegForm.optapvnao = True
+        
+        Else
+        
+            RegForm.optapvsim = True
+        
+        End If
+        
+        RegForm.TB19.Enabled = True
+        RegForm.TB19.Value = ActiveCell.Offset(0, 33).Value
+        RegForm.TB19.Enabled = False
+        RegForm.TB20.Enabled = True
+        RegForm.TB20.Value = ActiveCell.Offset(0, 34).Value
+        RegForm.TB20.Enabled = False
+        
+        If ActiveCell.Offset(0, 80).Value = "SIM" Then
+        
+            RegForm.CB1 = True
+        
+        Else
+        
+            RegForm.CB1 = False
+        
+        End If
+        
+        If ActiveCell.Offset(0, 81).Value = "SIM" Then
+        
+            RegForm.CB2 = True
+            
+        Else
+        
+            RegForm.CB2 = False
+        
+        End If
+        
+        If ActiveCell.Offset(0, 82).Value = "SIM" Then
+        
+            RegForm.CB3a = True
+            
+        Else
+        
+            RegForm.CB3a = False
+        
+        End If
+                
+        RegForm.TB21.Value = ActiveCell.Offset(0, 35).Value
+        RegForm.TB22.Value = ActiveCell.Offset(0, 36).Value
+        
+        If ActiveCell.Offset(0, 83).Value = "SIM" Then
+        
+            RegForm.CB3 = True
+            
+        Else
+        
+            RegForm.CB3 = False
+            
+        End If
+        
+        If ActiveCell.Offset(0, 84).Value = "SIM" Then
+        
+            RegForm.CB4 = True
+            
+        Else
+        
+            RegForm.CB4 = False
+            
+        End If
+        
+        If ActiveCell.Offset(0, 85).Value = "SIM" Then
+        
+            RegForm.CBOUTROS = True
+            
+        Else
+        
+            RegForm.CBOUTROS = False
+            
+        End If
+        
+        If ActiveCell.Offset(0, 86).Value = "SIM" Then
+        
+            RegForm.CB5 = True
+            
+        Else
+        
+            RegForm.CB5 = False
+            
+        End If
+        
+        RegForm.TB23.Value = ActiveCell.Offset(0, 37).Value
+        RegForm.TB24.Value = ActiveCell.Offset(0, 38).Value
+        RegForm.TB25.Value = ActiveCell.Offset(0, 40).Value
+        RegForm.TB26.Value = ActiveCell.Offset(0, 41).Value
+        RegForm.TB27.Value = ActiveCell.Offset(0, 39).Value
+        RegForm.TB28.Value = ActiveCell.Offset(0, 42).Value
+        RegForm.TB29.Value = ActiveCell.Offset(0, 43).Value
+        RegForm.TB28a.Value = ActiveCell.Offset(0, 44).Value
+        RegForm.TB29a.Value = ActiveCell.Offset(0, 45).Value
+        
+        If ActiveCell.Offset(0, 46).Value = RegForm.optcontnao.Caption Or ActiveCell.Offset(0, 46).Value = "" Then
+        
+            RegForm.optcontnao = True
+            
+        Else
+        
+            RegForm.optcontsim = True
+            
+        End If
+        
+        If ActiveCell.Offset(0, 47).Value = RegForm.optultnao.Caption Or ActiveCell.Offset(0, 47).Value = "" Then
+        
+            RegForm.optultnao = True
+            
+        Else
+        
+            RegForm.optultsim = True
+            
+        End If
+        
+        If ActiveCell.Offset(0, 48).Value = RegForm.optcpfnao.Caption Or ActiveCell.Offset(0, 48).Value = "" Then
+        
+            RegForm.optcpfnao = True
+            
+        Else
+            
+            RegForm.optcpfsim = True
+            
+        End If
+        
+        If ActiveCell.Offset(0, 49).Value = RegForm.optprocnao.Caption Or ActiveCell.Offset(0, 49).Value = "" Then
+        
+            RegForm.optprocnao = True
+            
+        Else
+            
+            RegForm.optprocsim = True
+            
+        End If
+        
+        If ActiveCell.Offset(0, 50).Value = RegForm.optresnao.Caption Or ActiveCell.Offset(0, 50).Value = "" Then
+        
+            RegForm.optresnao = True
+            
+        Else
+        
+            RegForm.optressim = True
+            
+        End If
+        
+        If ActiveCell.Offset(0, 51).Value = RegForm.optcnpjnao.Caption Or ActiveCell.Offset(0, 51).Value = "" Then
+        
+            RegForm.optcnpjnao = True
+            
+        Else
+        
+            RegForm.optcnpjsim = True
+            
+        End If
+        
+        If ActiveCell.Offset(0, 52).Value = RegForm.optprofnao.Caption Or ActiveCell.Offset(0, 52).Value = "" Then
+        
+            RegForm.optprofnao = True
+            
+        Else
+        
+            RegForm.optprofsim = True
+            
+        End If
+        
+         RegForm.TB30.Enabled = True
+        RegForm.TB30.Value = ActiveCell.Offset(0, 53).Value
+        RegForm.TB30.Enabled = False
+        
+        RegForm.TB31.Enabled = True
+        RegForm.TB31.Value = ActiveCell.Offset(0, 54).Value
+        RegForm.TB31.Enabled = False
+        
+        If ActiveCell.Offset(0, 55).Value = RegForm.optstatusnao.Caption Or ActiveCell.Offset(0, 55).Value = "" Then
+        
+            RegForm.optstatusnao = True
+            
+        Else
+        
+            RegForm.optstatussim = True
+            
+        End If
+        
+        RegForm.TB32.Enabled = True
+        RegForm.TB32.Value = ActiveCell.Offset(0, 56).Value
+        RegForm.TB32.Enabled = False
+        RegForm.TB33.Enabled = True
+        RegForm.TB33.Value = ActiveCell.Offset(0, 57).Value
+        RegForm.TB33.Enabled = False
+        RegForm.TB34.Value = ActiveCell.Offset(0, 58).Value
+        
+        If ActiveCell.Offset(0, 59).Value = RegForm.optflexnao.Caption Or ActiveCell.Offset(0, 59).Value = "" Then
+        
+            RegForm.optflexnao = True
+            
+        Else
+        
+            RegForm.optflexsim = True
+            
+        End If
+        
+        RegForm.TB35.Value = ActiveCell.Offset(0, 60).Value
+        RegForm.TB36.Value = ActiveCell.Offset(0, 61).Value
+        RegForm.TB37.Value = ActiveCell.Offset(0, 62).Value
+        RegForm.TB38.Value = ActiveCell.Offset(0, 63).Value
+        RegForm.TB39.Value = ActiveCell.Offset(0, 64).Value
+        RegForm.TB40.Value = ActiveCell.Offset(0, 65).Value
+        RegForm.TB41.Value = ActiveCell.Offset(0, 66).Value
+        RegForm.TB42.Value = ActiveCell.Offset(0, 67).Value
+        RegForm.TB43.Value = ActiveCell.Offset(0, 68).Value
+        RegForm.TB44.Value = ActiveCell.Offset(0, 69).Value
+        
+        If ActiveCell.Offset(0, 70).Value = RegForm.opttanao.Caption Or ActiveCell.Offset(0, 70).Value = "" Then
+        
+            RegForm.opttanao = True
+            
+        Else
+        
+            RegForm.opttasim = True
+            
+        End If
+        
+        RegForm.TB45.Value = ActiveCell.Offset(0, 71).Value
+        RegForm.TB46.Value = ActiveCell.Offset(0, 72).Value
+        RegForm.TB47.Value = ActiveCell.Offset(0, 73).Value
+        RegForm.TB48.Value = ActiveCell.Offset(0, 74).Value
+        RegForm.TB49.Value = ActiveCell.Offset(0, 75).Value
+        RegForm.TB53.Value = ActiveCell.Offset(0, 76).Value
+        RegForm.TB54.Value = ActiveCell.Offset(0, 77).Value
+        RegForm.TB55.Value = ActiveCell.Offset(0, 78).Value
+        RegForm.TB56.Value = ActiveCell.Offset(0, 79).Value
+        
+        On Error Resume Next
+        RegForm.LBLTA.Caption = "Termo de Acordo No.:"
+        RegForm.LBLFLEX.Caption = "Flex. Tarifária / Conta Corrente:"
+        RegForm.LBLREM.Caption = "% Remoção:"
+        RegForm.LBLUTEIS.Caption = "Dias Úteis:"
+        RegForm.LBLOUTROS.Caption = "Outros:"
+        RegForm.LBRESTA.Caption = Dir(ActiveCell.Offset(0, 53).Value, vbArchive)
+        RegForm.LBRESFLEX.Caption = ActiveCell.Offset(0, 35).Value
+        
+        If ActiveCell.Offset(0, 37).Value = "" Then
+        
+            RegForm.LBRESREM.Caption = "0%"
+            
+        Else
+        
+            RegForm.LBRESREM.Caption = ActiveCell.Offset(0, 37).Value
+        
+        End If
+        
+        If ActiveCell.Offset(0, 38).Value = "" Then
+        
+            RegForm.LBRESUTEIS.Caption = "Não"
+        
+        Else
+        
+            RegForm.LBRESUTEIS.Caption = ActiveCell.Offset(0, 38).Value
+        
+        End If
+        
+        RegForm.LBRESOUTROS.Caption = ActiveCell.Offset(0, 39).Value
+                      
+        End Select
+        
+      
+    WCAD.Select
+    Call OCULTAR_PLAN
+           
+        Exit Sub
+End If
+
+        
+    ActiveCell.Offset(1, 0).Select
+    
+    
+    Loop
+    
+If ActiveCell.Value = "" Then
+
+    
+    WCAD.Select
+    Call OCULTAR_PLAN
+    
+    Application.ScreenUpdating = True
+    MsgBox "Número de CNPJ não encontrado na Base de Dados. Por favor, tente novamente!", vbOKOnly
+
+Exit Sub
+
+End If
+
+WCAD.Select
+Call OCULTAR_PLAN
+
+Application.ScreenUpdating = True
+
+End Sub
